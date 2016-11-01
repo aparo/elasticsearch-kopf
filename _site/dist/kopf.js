@@ -3050,6 +3050,7 @@ function ESConnection(url, withCredentials) {
   var protectedUrl = /^(https|http):\/\/(\w+):(\w+)@(.*)/i;
   this.host = 'http://localhost:9200'; // default
   this.withCredentials = withCredentials;
+//  url = 'http://10.64.182.23:9200'
   if (notEmpty(url)) {
     var connectionParts = protectedUrl.exec(url);
     if (isDefined(connectionParts)) {
@@ -4625,6 +4626,7 @@ kopf.factory('ElasticService', ['$http', '$q', '$timeout', '$location',
      */
     this.connect = function(host) {
       this.reset();
+      var host = ExternalSettingsService.getElasticsearchNodeHost();
       var root = ExternalSettingsService.getElasticsearchRootPath();
       var withCredentials = ExternalSettingsService.withCredentials();
       this.connection = new ESConnection(host + root, withCredentials);
@@ -4761,7 +4763,7 @@ kopf.factory('ElasticService', ['$http', '$q', '$timeout', '$location',
      * @callback error - invoked on error
      */
     this.optimizeIndex = function(index, success, error) {
-      var path = '/' + encode(index) + '/_optimize';
+      var path = '/' + encode(index) + '/_forcemerge';
       this.clusterRequest('POST', path, {}, {}, success, error);
     };
 
@@ -5562,6 +5564,8 @@ kopf.factory('ExternalSettingsService', ['DebugService',
 
     var KEY = 'kopfSettings';
 
+    var ES_NODE_HOST = 'elasticsearch_node_host';
+
     var ES_ROOT_PATH = 'elasticsearch_root_path';
 
     var WITH_CREDENTIALS = 'with_credentials';
@@ -5579,7 +5583,7 @@ kopf.factory('ExternalSettingsService', ['DebugService',
         this.settings = this.fetchSettings();
         var localSettings = this.loadLocalSettings();
         this.updateSettings(localSettings);
-      }
+      }	
       return this.settings;
     };
 
@@ -5611,6 +5615,10 @@ kopf.factory('ExternalSettingsService', ['DebugService',
         };
       });
       return settings;
+    };
+
+    this.getElasticsearchNodeHost = function() {
+      return this.getSettings()[ES_NODE_HOST];
     };
 
     this.getElasticsearchRootPath = function() {
