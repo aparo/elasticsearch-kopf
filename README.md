@@ -1,4 +1,18 @@
 kopf
+======================UPDATE====================
+==========kopf_external_settings.json===========
+
+Add kopf_external_settings.json param. Kopf connect automatically
+to this host
+
+{
+    "elasticsearch_node_host": "http://192.168.100.25:9200",
+    "elasticsearch_root_path": "",
+    "with_credentials": false,
+    "theme": "dark",
+    "refresh_rate": 5000
+}
+
 =======================
 
 kopf is a simple web administration tool for [elasticsearch](http://elastic.co) written in JavaScript + AngularJS + jQuery + Twitter bootstrap.
